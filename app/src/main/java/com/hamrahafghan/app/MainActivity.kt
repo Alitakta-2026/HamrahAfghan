@@ -180,6 +180,8 @@ fun Jobs() {
     var selectedJob by remember { mutableStateOf<String?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
+    var selectedCity by remember { mutableStateOf("همه شهرها") }
+    var cityMenuExpanded by remember { mutableStateOf(false) }
 
     var title by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
@@ -207,9 +209,18 @@ fun Jobs() {
 
     val normalizedSearch = normalizeText(searchText)
 
+    val cityOptions = listOf("همه شهرها", "تهران", "مشهد", "کرج", "قم")
+
     val filteredJobs = jobs.filter {
-        normalizedSearch.isBlank() ||
-            normalizeText(it).contains(normalizedSearch, ignoreCase = true)
+        val matchesSearch =
+            normalizedSearch.isBlank() ||
+                normalizeText(it).contains(normalizedSearch, ignoreCase = true)
+
+        val matchesCity =
+            selectedCity == "همه شهرها" ||
+                normalizeText(it).contains(normalizeText(selectedCity), ignoreCase = true)
+
+        matchesSearch && matchesCity
     }
 
     LazyColumn(
@@ -229,6 +240,32 @@ fun Jobs() {
                 label = { Text("🔎 جستجوی شغل یا شهر") },
                 singleLine = true
             )
+
+            Spacer(Modifier.height(8.dp))
+
+            Box {
+                OutlinedButton(
+                    onClick = { cityMenuExpanded = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("📍 شهر: $selectedCity")
+                }
+
+                DropdownMenu(
+                    expanded = cityMenuExpanded,
+                    onDismissRequest = { cityMenuExpanded = false }
+                ) {
+                    cityOptions.forEach { city ->
+                        DropdownMenuItem(
+                            text = { Text(city) },
+                            onClick = {
+                                selectedCity = city
+                                cityMenuExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             Spacer(Modifier.height(8.dp))
 
