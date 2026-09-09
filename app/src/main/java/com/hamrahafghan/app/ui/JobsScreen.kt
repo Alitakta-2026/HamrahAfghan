@@ -29,6 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+data class Job(val title: String, val type: String, val city: String, val salary: String, val hours: String, val description: String)
+
+
 private fun normalizeText(text: String): String {
     return text
         .replace("ي", "ی")
