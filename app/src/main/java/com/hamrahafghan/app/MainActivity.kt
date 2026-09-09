@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.*
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
@@ -176,6 +177,7 @@ fun Wallet() {
 
 @Composable
 fun Jobs() {
+    var selectedJob by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val jobs = listOf(
         "کارگر ساده — تهران",
@@ -194,12 +196,21 @@ fun Jobs() {
         items(jobs) { job ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Text(job, fontWeight = FontWeight.Bold)
+                    Button(onClick = { selectedJob = job }) { Text("مشاهده") }
                     Text("برای اطلاعات بیشتر و ثبت آگهی، نسخه بعدی تکمیل می‌شود.")
-                    Button(onClick = { Toast.makeText(context, job, Toast.LENGTH_SHORT).show() }) { Text("مشاهده") }
                 }
             }
         }
+    }
+    if (selectedJob != null) {
+        AlertDialog(
+            onDismissRequest = { selectedJob = null },
+            title = { Text("جزئیات آگهی") },
+            text = { Text("عنوان شغل: $selectedJob\n\nبرای اطلاعات بیشتر با آگهی‌دهنده تماس بگیرید.") },
+            confirmButton = {
+                Button(onClick = { selectedJob = null }) { Text("بستن") }
+            }
+        )
     }
 }
 
