@@ -179,6 +179,7 @@ fun Wallet() {
 fun Jobs() {
     var selectedJob by remember { mutableStateOf<String?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf("") }
 
     var title by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
@@ -194,6 +195,10 @@ fun Jobs() {
         )
     }
 
+    val filteredJobs = jobs.filter {
+        searchText.isBlank() || it.contains(searchText.trim(), ignoreCase = true)
+    }
+
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -201,6 +206,17 @@ fun Jobs() {
         item {
             Text("💼 کاریابی", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Text("آگهی‌های کاری برای کاربران")
+
+            Spacer(Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = searchText,
+                onValueChange = { searchText = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("🔎 جستجوی شغل یا شهر") },
+                singleLine = true
+            )
+
             Spacer(Modifier.height(8.dp))
 
             Button(
@@ -211,7 +227,7 @@ fun Jobs() {
             }
         }
 
-        items(jobs) { job ->
+        items(filteredJobs) { job ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
                     Text(job, fontWeight = FontWeight.Bold)
@@ -220,6 +236,15 @@ fun Jobs() {
                         Text("مشاهده")
                     }
                 }
+            }
+        }
+
+        if (filteredJobs.isEmpty()) {
+            item {
+                Text(
+                    "آگهی‌ای برای جستجوی شما پیدا نشد.",
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
