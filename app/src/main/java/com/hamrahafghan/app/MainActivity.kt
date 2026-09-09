@@ -176,6 +176,7 @@ fun Wallet() {
 
 @Composable
 fun Jobs() {
+    val context = LocalContext.current
     val jobs = listOf(
         "کارگر ساده — تهران",
         "کمک‌آشپز — مشهد",
