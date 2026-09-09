@@ -195,8 +195,21 @@ fun Jobs() {
         )
     }
 
+    fun normalizeText(text: String): String {
+        return text
+            .replace("ي", "ی")
+            .replace("ى", "ی")
+            .replace("ك", "ک")
+            .replace("ۀ", "ه")
+            .replace("ة", "ه")
+            .trim()
+    }
+
+    val normalizedSearch = normalizeText(searchText)
+
     val filteredJobs = jobs.filter {
-        searchText.isBlank() || it.contains(searchText.trim(), ignoreCase = true)
+        normalizedSearch.isBlank() ||
+            normalizeText(it).contains(normalizedSearch, ignoreCase = true)
     }
 
     LazyColumn(
