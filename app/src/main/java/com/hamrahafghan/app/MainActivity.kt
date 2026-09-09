@@ -184,6 +184,7 @@ fun Jobs() {
     var cityMenuExpanded by remember { mutableStateOf(false) }
 
     var title by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
     var hours by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -327,6 +328,13 @@ fun Jobs() {
                         singleLine = true
                     )
                     OutlinedTextField(
+                        value = type,
+                        onValueChange = { type = it },
+                        label = { Text("نوع کار") },
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
                         value = city,
                         onValueChange = { city = it },
                         label = { Text("شهر") },
@@ -350,9 +358,10 @@ fun Jobs() {
                     onClick = {
                         if (title.isNotBlank() && city.isNotBlank()) {
                             jobs.add(
-                                "$title — $city | حقوق: توافقی | ساعت: $hours | توضیحات: $description"
+                                "$title — $type — $city | حقوق: توافقی | ساعت: $hours | توضیحات: $description"
                             )
                             title = ""
+                            type = ""
                             city = ""
                             hours = ""
                             description = ""
