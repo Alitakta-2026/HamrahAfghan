@@ -178,37 +178,120 @@ fun Wallet() {
 @Composable
 fun Jobs() {
     var selectedJob by remember { mutableStateOf<String?>(null) }
-    val context = LocalContext.current
-    val jobs = listOf(
-        "کارگر ساده — تهران | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کار در مجموعه خدماتی",
-        "کمک‌آشپز — مشهد | حقوق: توافقی | ساعت: ۹ تا ۱۸ | توضیحات: کمک در آشپزخانه",
-        "شاگرد مکانیکی — کرج | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کمک به مکانیک و یادگیری کار",
-        "نیروی خدماتی — قم | حقوق: توافقی | ساعت: ۷ تا ۱۶ | توضیحات: نظافت و خدمات مجموعه"
-    )
+    var showAddJob by remember { mutableStateOf(false) }
+
+    var title by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
+    var hours by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+    val jobs = remember {
+        mutableStateListOf(
+            "کارگر ساده — تهران | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کار در مجموعه خدماتی",
+            "کمک‌آشپز — مشهد | حقوق: توافقی | ساعت: ۹ تا ۱۸ | توضیحات: کمک در آشپزخانه",
+            "شاگرد مکانیکی — کرج | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کمک به مکانیک و یادگیری کار",
+            "نیروی خدماتی — قم | حقوق: توافقی | ساعت: ۷ تا ۱۶ | توضیحات: نظافت و خدمات مجموعه"
+        )
+    }
+
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
             Text("💼 کاریابی", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text("آگهی‌های نمونه برای نسخه آزمایشی")
+            Text("آگهی‌های کاری برای کاربران")
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = { showAddJob = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("➕ ثبت آگهی کار")
+            }
         }
+
         items(jobs) { job ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Button(onClick = { selectedJob = job }) { Text("مشاهده") }
-                    Text("برای اطلاعات بیشتر و ثبت آگهی، نسخه بعدی تکمیل می‌شود.")
+                    Text(job, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(6.dp))
+                    Button(onClick = { selectedJob = job }) {
+                        Text("مشاهده")
+                    }
                 }
             }
         }
     }
+
     if (selectedJob != null) {
         AlertDialog(
             onDismissRequest = { selectedJob = null },
             title = { Text("جزئیات آگهی") },
-            text = { Text("عنوان شغل: $selectedJob\n\nبرای اطلاعات بیشتر با آگهی‌دهنده تماس بگیرید.") },
+            text = { Text(selectedJob ?: "") },
             confirmButton = {
-                Button(onClick = { selectedJob = null }) { Text("بستن") }
+                Button(onClick = { selectedJob = null }) {
+                    Text("بستن")
+                }
+            }
+        )
+    }
+
+    if (showAddJob) {
+        AlertDialog(
+            onDismissRequest = { showAddJob = false },
+            title = { Text("ثبت آگهی کار") },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text("عنوان شغل") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = city,
+                        onValueChange = { city = it },
+                        label = { Text("شهر") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = hours,
+                        onValueChange = { hours = it },
+                        label = { Text("ساعت کاری") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text("توضیحات") }
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (title.isNotBlank() && city.isNotBlank()) {
+                            jobs.add(
+                                "$title — $city | حقوق: توافقی | ساعت: $hours | توضیحات: $description"
+                            )
+                            title = ""
+                            city = ""
+                            hours = ""
+                            description = ""
+                            showAddJob = false
+                        }
+                    }
+                ) {
+                    Text("ثبت آگهی")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showAddJob = false }) {
+                    Text("انصراف")
+                }
             }
         )
     }
