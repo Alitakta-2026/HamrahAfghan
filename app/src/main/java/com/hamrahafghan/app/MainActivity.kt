@@ -133,6 +133,7 @@ fun Section(t: String, s: String, go: (String) -> Unit, target: String) {
 
 @Composable
 fun Wallet() {
+    var balance by remember { mutableStateOf(500000) }
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -144,10 +145,10 @@ fun Wallet() {
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp)) {
                     Text("موجودی آزمایشی")
-                    Text("۵۰۰٬۰۰۰ تومان", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("موجودی: $balance تومان", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(10.dp))
                     Button(
-                        onClick = {},
+                        onClick = { balance += 50000 },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("➕ افزایش موجودی آزمایشی") }
                 }
