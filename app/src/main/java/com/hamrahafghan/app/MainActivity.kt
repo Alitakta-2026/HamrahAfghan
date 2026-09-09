@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -172,6 +174,7 @@ fun Wallet() {
     }
 }
 
+    val context = LocalContext.current
 @Composable
 fun Jobs() {
     val jobs = listOf(
@@ -193,7 +196,7 @@ fun Jobs() {
                 Column(Modifier.padding(16.dp)) {
                     Text(job, fontWeight = FontWeight.Bold)
                     Text("برای اطلاعات بیشتر و ثبت آگهی، نسخه بعدی تکمیل می‌شود.")
-                    Button(onClick = {}) { Text("مشاهده") }
+                    Button(onClick = { Toast.makeText(context, job, Toast.LENGTH_SHORT).show() }) { Text("مشاهده") }
                 }
             }
         }
