@@ -131,7 +131,7 @@ fun Jobs() {
         items(filteredJobs) { job ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Text(job, fontWeight = FontWeight.Bold)
+                    Text(job.title, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(6.dp))
                     Button(onClick = { selectedJob = job }) {
                         Text("مشاهده")
