@@ -174,7 +174,6 @@ fun Wallet() {
     }
 }
 
-    val context = LocalContext.current
 @Composable
 fun Jobs() {
     val jobs = listOf(
