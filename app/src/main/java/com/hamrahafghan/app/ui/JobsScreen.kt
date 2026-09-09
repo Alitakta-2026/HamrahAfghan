@@ -44,7 +44,7 @@ private fun normalizeText(text: String): String {
 
 @Composable
 fun Jobs() {
-    var selectedJob by remember { mutableStateOf<String?>(null) }
+    var selectedJob by remember { mutableStateOf<Job?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     var selectedCity by remember { mutableStateOf("همه شهرها") }
@@ -52,10 +52,10 @@ fun Jobs() {
 
     val jobs = remember {
         mutableStateListOf(
-            "کارگر ساده — تهران | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کار در مجموعه خدماتی",
-            "کمک‌آشپز — مشهد | حقوق: توافقی | ساعت: ۹ تا ۱۸ | توضیحات: کمک در آشپزخانه",
-            "شاگرد مکانیکی — کرج | حقوق: توافقی | ساعت: ۸ تا ۱۷ | توضیحات: کمک به مکانیک و یادگیری کار",
-            "نیروی خدماتی — قم | حقوق: توافقی | ساعت: ۷ تا ۱۶ | توضیحات: نظافت و خدمات مجموعه"
+            Job("کارگر ساده","خدماتی","تهران","توافقی","۸ تا ۱۷","کار در مجموعه خدماتی"),
+            Job("کمک‌آشپز","آشپزی","مشهد","توافقی","۹ تا ۱۸","کمک در آشپزخانه"),
+            Job("شاگرد مکانیکی","مکانیکی","کرج","توافقی","۸ تا ۱۷","کمک به مکانیک و یادگیری کار"),
+            Job("نیروی خدماتی","خدماتی","قم","توافقی","۷ تا ۱۶","نظافت و خدمات مجموعه")
         )
     }
 
@@ -65,11 +65,11 @@ fun Jobs() {
     val filteredJobs = jobs.filter {
         val matchesSearch =
             normalizedSearch.isBlank() ||
-                normalizeText(it).contains(normalizedSearch, ignoreCase = true)
+                normalizeText(it.title+" "+it.type+" "+it.city+" "+it.description).contains(normalizedSearch, ignoreCase = true)
 
         val matchesCity =
             selectedCity == "همه شهرها" ||
-                normalizeText(it).contains(normalizeText(selectedCity), ignoreCase = true)
+                normalizeText(it.city).contains(normalizeText(selectedCity), ignoreCase = true)
 
         matchesSearch && matchesCity
     }
@@ -151,7 +151,7 @@ fun Jobs() {
     }
 
     if (selectedJob != null) {
-        JobDetailDialog(job = selectedJob ?: "", onDismiss = { selectedJob = null })
+        JobDetailDialog(job = selectedJob!!, onDismiss = { selectedJob = null })
     }
 
     if (showAddJob) {
