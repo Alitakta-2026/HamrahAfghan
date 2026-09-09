@@ -160,11 +160,20 @@ fun Jobs() {
 }
 
 @Composable
-private fun JobDetailDialog(job: String, onDismiss: () -> Unit) {
+private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("جزئیات آگهی") },
-        text = { Text(job) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("عنوان شغل: ${job.title}")
+                Text("نوع کار: ${job.type}")
+                Text("شهر: ${job.city}")
+                Text("حقوق: ${job.salary}")
+                Text("ساعت کاری: ${job.hours}")
+                Text("توضیحات: ${job.description}")
+            }
+        },
         confirmButton = {
             Button(onClick = onDismiss) {
                 Text("بستن")
@@ -174,10 +183,14 @@ private fun JobDetailDialog(job: String, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun AddJobDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
+private fun AddJobDialog(
+    onDismiss: () -> Unit,
+    onSubmit: (Job) -> Unit
+) {
     var title by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
+    var salary by remember { mutableStateOf("توافقی") }
     var hours by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -185,47 +198,20 @@ private fun AddJobDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
         onDismissRequest = onDismiss,
         title = { Text("ثبت آگهی کار") },
         text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("عنوان شغل") },
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = type,
-                    onValueChange = { type = it },
-                    label = { Text("نوع کار") },
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = city,
-                    onValueChange = { city = it },
-                    label = { Text("شهر") },
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = hours,
-                    onValueChange = { hours = it },
-                    label = { Text("ساعت کاری") },
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("توضیحات") }
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("عنوان شغل") }, singleLine = true)
+                OutlinedTextField(value = type, onValueChange = { type = it }, label = { Text("نوع کار") }, singleLine = true)
+                OutlinedTextField(value = city, onValueChange = { city = it }, label = { Text("شهر") }, singleLine = true)
+                OutlinedTextField(value = salary, onValueChange = { salary = it }, label = { Text("حقوق") }, singleLine = true)
+                OutlinedTextField(value = hours, onValueChange = { hours = it }, label = { Text("ساعت کاری") }, singleLine = true)
+                OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("توضیحات") })
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    if (title.isNotBlank() && city.isNotBlank()) {
-                        onSubmit(
-                            "$title — $type — $city | حقوق: توافقی | ساعت: $hours | توضیحات: $description"
-                        )
+                    if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
+                        onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, hours, description))
                         onDismiss()
                     }
                 }
