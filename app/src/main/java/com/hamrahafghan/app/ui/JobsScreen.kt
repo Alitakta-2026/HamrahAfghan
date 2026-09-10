@@ -49,6 +49,7 @@ private fun normalizeText(text: String): String {
 fun Jobs() {
     var selectedJob by remember { mutableStateOf<Job?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
+    var editingJob by remember { mutableStateOf<Job?>(null) }
     var showMyJobs by remember { mutableStateOf(false) }
     val myJobs = remember { mutableStateListOf<Job>() }
     var searchText by remember { mutableStateOf("") }
@@ -172,7 +173,7 @@ fun Jobs() {
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         myJobs.forEach { job ->
-                            Column { Text("${job.title} — ${job.city}") ; Button(onClick = { myJobs.remove(job); jobs.remove(job) }) { Text("🗑️ حذف") } }
+                            Column { Text("${job.title} — ${job.city}") ; Button(onClick = { editingJob = job; showMyJobs = false }) { Text("✏️ ویرایش") }; Button(onClick = { myJobs.remove(job); jobs.remove(job) }) { Text("🗑️ حذف") } }
                         }
                     }
                 }
@@ -182,6 +183,7 @@ fun Jobs() {
             }
         )
     }
+    if (editingJob != null) { AddJobDialog(existingJob = editingJob, onDismiss = { editingJob = null }, onSubmit = { entry -> val i = myJobs.indexOf(editingJob); if (i >= 0) myJobs[i] = entry; val j = jobs.indexOf(editingJob); if (j >= 0) jobs[j] = entry; editingJob = null }) }
     if (showAddJob) {
         AddJobDialog(
             onDismiss = { showAddJob = false },
@@ -259,17 +261,17 @@ private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
     }
 }
 @Composable
-private fun AddJobDialog(
+private fun AddJobDialog(existingJob: Job? = null,
     onDismiss: () -> Unit,
     onSubmit: (Job) -> Unit
 ) {
-    var title by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
-    var salary by remember { mutableStateOf("توافقی") }
-    var phone by remember { mutableStateOf("") }
-    var hours by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(existingJob?.title ?: "") }
+    var type by remember { mutableStateOf(existingJob?.type ?: "") }
+    var city by remember { mutableStateOf(existingJob?.city ?: "") }
+    var salary by remember { mutableStateOf(existingJob?.salary ?: "توافقی") }
+    var phone by remember { mutableStateOf(existingJob?.phone ?: "") }
+    var hours by remember { mutableStateOf(existingJob?.hours ?: "") }
+    var description by remember { mutableStateOf(existingJob?.description ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
