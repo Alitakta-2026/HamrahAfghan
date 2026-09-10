@@ -61,7 +61,6 @@ fun Jobs() {
             Job("نیروی خدماتی","خدماتی","قم","توافقی","","۷ تا ۱۶","نظافت و خدمات مجموعه")
         )
     }
-
     val normalizedSearch = normalizeText(searchText)
     val cityOptions = listOf("همه شهرها", "تهران", "مشهد", "کرج", "قم")
 
@@ -169,8 +168,8 @@ fun Jobs() {
 private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
     var showMessage by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf("") }
-    var sent by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
     if (showMessage) {
         AlertDialog(
             onDismissRequest = { showMessage = false },
@@ -178,12 +177,28 @@ private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("آگهی: ${job.title}")
-                    OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("متن پیام") })
-                    if (sent) Text("✅ پیام برای این آگهی ثبت شد.")
+                    if (job.phone.isBlank()) {
+                        Text("⚠️ برای این آگهی شماره تماسی ثبت نشده، امکان ارسال پیام نیست.")
+                    } else {
+                        OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("متن پیام") })
+                        Text("با زدن «ارسال»، اپ پیام‌رسان پیامک گوشی‌ات باز می‌شود تا پیام را برای صاحب آگهی بفرستی.")
+                    }
                 }
             },
             confirmButton = {
-                Button(onClick = { if (message.isNotBlank()) { sent = true; message = "" } }) { Text("ارسال") }
+                if (job.phone.isNotBlank()) {
+                    Button(onClick = {
+                        if (message.isNotBlank()) {
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("smsto:${job.phone}")
+                                putExtra("sms_body", message)
+                            }
+                            context.startActivity(intent)
+                            showMessage = false
+                            message = ""
+                        }
+                    }) { Text("ارسال") }
+                }
             },
             dismissButton = { Button(onClick = { showMessage = false }) { Text("بستن") } }
         )
@@ -244,7 +259,7 @@ private fun AddJobDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
++                    if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
                         onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, phone, hours, description))
                         onDismiss()
                     }
