@@ -194,6 +194,7 @@ private fun AddJobDialog(
     var type by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
     var salary by remember { mutableStateOf("توافقی") }
+    var salary by remember { mutableStateOf("") }
     var hours by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
