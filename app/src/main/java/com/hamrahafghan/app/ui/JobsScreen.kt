@@ -49,6 +49,8 @@ private fun normalizeText(text: String): String {
 fun Jobs() {
     var selectedJob by remember { mutableStateOf<Job?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
+    var showMyJobs by remember { mutableStateOf(false) }
+    val myJobs = remember { mutableStateListOf<Job>() }
     var searchText by remember { mutableStateOf("") }
     var selectedCity by remember { mutableStateOf("همه شهرها") }
     var cityMenuExpanded by remember { mutableStateOf(false) }
@@ -128,6 +130,10 @@ fun Jobs() {
             ) {
                 Text("➕ ثبت آگهی کار")
             }
+            Spacer(Modifier.height(6.dp))
+            OutlinedButton(onClick = { showMyJobs = true }, modifier = Modifier.fillMaxWidth()) {
+                Text("📋 آگهی‌های من")
+            }
         }
 
         items(filteredJobs) { job ->
@@ -159,7 +165,10 @@ fun Jobs() {
     if (showAddJob) {
         AddJobDialog(
             onDismiss = { showAddJob = false },
-            onSubmit = { entry -> jobs.add(entry) }
+            onSubmit = { entry ->
+                jobs.add(entry)
+                myJobs.add(entry)
+            }
         )
     }
 }
