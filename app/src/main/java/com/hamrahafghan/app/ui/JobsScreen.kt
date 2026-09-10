@@ -1,5 +1,7 @@
 package com.hamrahafghan.app.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +27,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class Job(val title: String, val type: String, val city: String, val salary: String, val hours: String, val description: String)
+data class Job(val title: String, val type: String, val city: String, val salary: String, val phone: String, val hours: String, val description: String)
 
 
 private fun normalizeText(text: String): String {
@@ -52,10 +55,10 @@ fun Jobs() {
 
     val jobs = remember {
         mutableStateListOf(
-            Job("کارگر ساده","خدماتی","تهران","توافقی","۸ تا ۱۷","کار در مجموعه خدماتی"),
-            Job("کمک‌آشپز","آشپزی","مشهد","توافقی","۹ تا ۱۸","کمک در آشپزخانه"),
-            Job("شاگرد مکانیکی","مکانیکی","کرج","توافقی","۸ تا ۱۷","کمک به مکانیک و یادگیری کار"),
-            Job("نیروی خدماتی","خدماتی","قم","توافقی","۷ تا ۱۶","نظافت و خدمات مجموعه")
+            Job("کارگر ساده","خدماتی","تهران","توافقی","","۸ تا ۱۷","کار در مجموعه خدماتی"),
+            Job("کمک‌آشپز","آشپزی","مشهد","توافقی","","۹ تا ۱۸","کمک در آشپزخانه"),
+            Job("شاگرد مکانیکی","مکانیکی","کرج","توافقی","","۸ تا ۱۷","کمک به مکانیک و یادگیری کار"),
+            Job("نیروی خدماتی","خدماتی","قم","توافقی","","۷ تا ۱۶","نظافت و خدمات مجموعه")
         )
     }
 
@@ -175,11 +178,17 @@ private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
                 Text("حقوق: ${job.salary}")
                 Text("ساعت کاری: ${job.hours}")
                 Text("توضیحات: ${job.description}")
+                if (job.phone.isNotBlank()) Text("📞 شماره تماس: ${job.phone}")
             }
         },
         confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("بستن")
+            if (job.phone.isNotBlank()) {
+                val context = LocalContext.current
+                Button(onClick = { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${job.phone}"))) }) {
+                    Text("📞 تماس با صاحب‌کار")
+                }
+            } else {
+                Button(onClick = onDismiss) { Text("بستن") }
             }
         }
     )
@@ -216,7 +225,7 @@ private fun AddJobDialog(
             Button(
                 onClick = {
                     if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
-                        onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, hours, description))
+                        onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, phone, hours, description))
                         onDismiss()
                     }
                 }
