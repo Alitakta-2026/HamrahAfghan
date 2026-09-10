@@ -162,6 +162,26 @@ fun Jobs() {
         JobDetailDialog(job = selectedJob!!, onDismiss = { selectedJob = null })
     }
 
+    if (showMyJobs) {
+        AlertDialog(
+            onDismissRequest = { showMyJobs = false },
+            title = { Text("📋 آگهی‌های من") },
+            text = {
+                if (myJobs.isEmpty()) {
+                    Text("هنوز آگهی‌ای ثبت نکرده‌اید.")
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        myJobs.forEach { job ->
+                            Text("${job.title} — ${job.city}")
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = { showMyJobs = false }) { Text("بستن") }
+            }
+        )
+    }
     if (showAddJob) {
         AddJobDialog(
             onDismiss = { showAddJob = false },
