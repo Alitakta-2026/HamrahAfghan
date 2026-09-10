@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160742124900",
+    "project_id": "hamrahafghan-d99c4",
+    "storage_bucket": "hamrahafghan-d99c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160742124900:android:9fbfecee4601b5ad125e71",
+        "android_client_info": {
+          "package_name": "com.hamrahafghan.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa8E9PGoqHYACgDrLFKmm4COSILhXRExo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
