@@ -67,6 +67,18 @@ fun More() {
                 else Text("🌐 تست اتصال اینترنت")
             }
         }
+        if (testResult != null) {
+            item {
+                AlertDialog(
+                    onDismissRequest = { testResult = null },
+                    title = { Text("🌐 وضعیت اتصال") },
+                    text = { Text(testResult!!) },
+                    confirmButton = {
+                        Button(onClick = { testResult = null }) { Text("باشه") }
+                    }
+                )
+            }
+        }
         item {
             Text("همراه افغان — نسخه ۶.۰",
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
