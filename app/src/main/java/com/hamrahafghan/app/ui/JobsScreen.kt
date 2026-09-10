@@ -167,33 +167,53 @@ fun Jobs() {
 
 @Composable
 private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("جزئیات آگهی") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("عنوان شغل: ${job.title}")
-                Text("نوع کار: ${job.type}")
-                Text("شهر: ${job.city}")
-                Text("حقوق: ${job.salary}")
-                Text("ساعت کاری: ${job.hours}")
-                Text("توضیحات: ${job.description}")
-                if (job.phone.isNotBlank()) Text("📞 شماره تماس: ${job.phone}")
-            }
-        },
-        confirmButton = {
-            if (job.phone.isNotBlank()) {
-                val context = LocalContext.current
-                Button(onClick = { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${job.phone}"))) }) {
-                    Text("📞 تماس با صاحب‌کار")
+    var showMessage by remember { mutableStateOf(false) }
+    var message by remember { mutableStateOf("") }
+    var sent by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    if (showMessage) {
+        AlertDialog(
+            onDismissRequest = { showMessage = false },
+            title = { Text("💬 پیام به صاحب‌کار") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("آگهی: ${job.title}")
+                    OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("متن پیام") })
+                    if (sent) Text("✅ پیام برای این آگهی ثبت شد.")
                 }
-            } else {
-                Button(onClick = onDismiss) { Text("بستن") }
+            },
+            confirmButton = {
+                Button(onClick = { if (message.isNotBlank()) { sent = true; message = "" } }) { Text("ارسال") }
+            },
+            dismissButton = { Button(onClick = { showMessage = false }) { Text("بستن") } }
+        )
+    } else {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("جزئیات آگهی") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("عنوان شغل: ${job.title}")
+                    Text("نوع کار: ${job.type}")
+                    Text("شهر: ${job.city}")
+                    Text("حقوق: ${job.salary}")
+                    Text("ساعت کاری: ${job.hours}")
+                    Text("توضیحات: ${job.description}")
+                    if (job.phone.isNotBlank()) Text("📞 شماره تماس: ${job.phone}")
+                }
+            },
+            confirmButton = {
+                Column {
+                    Button(onClick = { showMessage = true }) { Text("💬 پیام به صاحب‌کار") }
+                    if (job.phone.isNotBlank()) {
+                        Button(onClick = { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${job.phone}"))) }) { Text("📞 تماس با صاحب‌کار") }
+                    }
+                    Button(onClick = onDismiss) { Text("بستن") }
+                }
             }
-        }
-    )
+        )
+    }
 }
-
 @Composable
 private fun AddJobDialog(
     onDismiss: () -> Unit,
