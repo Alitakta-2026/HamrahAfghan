@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")
 }
 
 val keystoreProps = Properties()
@@ -47,4 +48,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.9.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.9.0")
     implementation("androidx.compose.material3:material3:1.3.2")
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 }
