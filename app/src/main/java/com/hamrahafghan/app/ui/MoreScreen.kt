@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun More() {
+fun More(onMigrationClick: () -> Unit = {}) {
     var testResult by remember { mutableStateOf<String?>(null) }
     var testing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -46,7 +46,7 @@ fun More() {
                 "💬 پرسش و پاسخ", "🔐 حریم خصوصی"
             )
         ) {
-            Card(Modifier.fillMaxWidth()) {
+            Card(Modifier.fillMaxWidth(), onClick = { if (it == "🌍 مهاجرت و ویزا") onMigrationClick() }) {
                 ListItem(headlineContent = { Text(it) }, trailingContent = { Text("›") })
             }
         }
