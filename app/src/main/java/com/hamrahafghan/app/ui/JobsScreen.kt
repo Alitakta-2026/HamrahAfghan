@@ -259,7 +259,7 @@ private fun AddJobDialog(
         confirmButton = {
             Button(
                 onClick = {
-+                    if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
+                    if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
                         onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, phone, hours, description))
                         onDismiss()
                     }
