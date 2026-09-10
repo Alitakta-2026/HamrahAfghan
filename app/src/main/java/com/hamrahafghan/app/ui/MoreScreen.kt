@@ -46,7 +46,7 @@ fun More(onMigrationClick: () -> Unit = {}) {
                 "💬 پرسش و پاسخ", "🔐 حریم خصوصی"
             )
         ) {
-            Card(Modifier.fillMaxWidth(), onClick = { if (it == "🌍 مهاجرت و ویزا") onMigrationClick() }) {
+            Card(onClick = { if (it == "🌍 مهاجرت و ویزا") onMigrationClick() }, modifier = Modifier.fillMaxWidth()) {
                 ListItem(headlineContent = { Text(it) }, trailingContent = { Text("›") })
             }
         }
