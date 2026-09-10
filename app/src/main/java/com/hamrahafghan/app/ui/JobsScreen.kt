@@ -172,7 +172,7 @@ fun Jobs() {
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         myJobs.forEach { job ->
-                            Text("${job.title} — ${job.city}")
+                            Column { Text("${job.title} — ${job.city}") ; Button(onClick = { myJobs.remove(job); jobs.remove(job) }) { Text("🗑️ حذف") } }
                         }
                     }
                 }
