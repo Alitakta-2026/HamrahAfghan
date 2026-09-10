@@ -207,6 +207,7 @@ private fun AddJobDialog(
                 OutlinedTextField(value = type, onValueChange = { type = it }, label = { Text("نوع کار") }, singleLine = true)
                 OutlinedTextField(value = city, onValueChange = { city = it }, label = { Text("شهر") }, singleLine = true)
                 OutlinedTextField(value = salary, onValueChange = { salary = it }, label = { Text("حقوق") }, singleLine = true)
+                OutlinedTextField(value = phone, onValueChange = { phone = it }, label = { Text("شماره تماس صاحب آگهی") }, singleLine = true)
                 OutlinedTextField(value = hours, onValueChange = { hours = it }, label = { Text("ساعت کاری") }, singleLine = true)
                 OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("توضیحات") })
             }
