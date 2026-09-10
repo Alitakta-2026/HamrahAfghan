@@ -30,8 +30,6 @@ fun MigrationScreen() {
             val data = withContext(Dispatchers.IO) { MigrationApi.load() }
             title = data.optString("title", title)
             notice = data.optString("notice", "")
-            val a = data.optJSONArray("sources")
-            if (a != null && a.length() > 0) source = a.getJSONObject(0).optString("name", "")
         } catch (e: Exception) {
             error = true
         }
