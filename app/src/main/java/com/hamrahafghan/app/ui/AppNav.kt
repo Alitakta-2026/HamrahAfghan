@@ -58,6 +58,7 @@ fun App() {
                     when (page) {
                         "home" -> Home { page = it }
                         "wallet" -> Wallet()
+                    "children" -> ChildrenEducationScreen()
                         "migration" -> MigrationScreen()
                         "jobs" -> Jobs()
                         else -> More { page = "migration" }
