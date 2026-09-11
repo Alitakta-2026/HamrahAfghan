@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MigrationScreen() {
+    var searchText by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("🌍 مهاجرت و ویزا") }
     var notice by remember { mutableStateOf("") }
     var source by remember { mutableStateOf("") }
@@ -40,6 +42,7 @@ fun MigrationScreen() {
         modifier = Modifier.fillMaxSize().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        OutlinedTextField(value = searchText, onValueChange = { searchText = it }, modifier = Modifier.fillMaxWidth(), label = { Text("🔎 جستجو در مهاجرت و ویزا") }, singleLine = true)
         Text(title)
         if (loading) {
             CircularProgressIndicator()

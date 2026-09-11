@@ -99,43 +99,28 @@ fun Jobs() {
 
             Spacer(Modifier.height(8.dp))
 
-            Box {
-                OutlinedButton(
-                    onClick = { cityMenuExpanded = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("📍 شهر: $selectedCity")
-                }
-
-                DropdownMenu(
-                    expanded = cityMenuExpanded,
-                    onDismissRequest = { cityMenuExpanded = false }
-                ) {
-                    cityOptions.forEach { city ->
-                        DropdownMenuItem(
-                            text = { Text(city) },
-                            onClick = {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(Modifier.weight(1f)) {
+                    OutlinedButton(onClick = { cityMenuExpanded = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text("📍 شهر")
+                    }
+                    DropdownMenu(expanded = cityMenuExpanded, onDismissRequest = { cityMenuExpanded = false }) {
+                        cityOptions.forEach { city ->
+                            DropdownMenuItem(text = { Text(city) }, onClick = {
                                 selectedCity = city
                                 cityMenuExpanded = false
-                            }
-                        )
+                            })
+                        }
                     }
                 }
+                Button(onClick = { showAddJob = true }, modifier = Modifier.weight(1f)) {
+                    Text("➕ ثبت آگهی")
+                }
+                OutlinedButton(onClick = { showMyJobs = true }, modifier = Modifier.weight(1f)) {
+                    Text("📋 آگهی‌های من")
+                }
             }
-
             Spacer(Modifier.height(8.dp))
-
-            Button(
-                onClick = { showAddJob = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("➕ ثبت آگهی کار")
-            }
-            Spacer(Modifier.height(6.dp))
-            OutlinedButton(onClick = { showMyJobs = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("📋 آگهی‌های من")
-            }
-        }
 
         items(filteredJobs) { job ->
             Card(Modifier.fillMaxWidth()) {

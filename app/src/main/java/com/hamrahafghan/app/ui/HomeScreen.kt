@@ -14,21 +14,30 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+fun homeSearch(q: String): List<Triple<String,String,String>> = listOf(Triple("💰 کیف پول همراه","پرداخت شارژ، قبض و خدمات","wallet"), Triple("💼 کاریابی","پیدا کردن کار و ثبت آگهی","jobs"), Triple("🌍 مهاجرت و ویزا","اطلاعات و منابع معتبر","more"), Triple("📚 آموزش کودکان","آموزش و سرگرمی","more"), Triple("🏠 خانه و خدمات","اطلاعات کاربردی","more"), Triple("🆘 کمک فوری","شماره‌ها و مراکز مهم","more")).filter { (a,b,_) -> "$a $b".contains(q, true) }
+
 @Composable
 fun Home(go: (String) -> Unit) {
+    var searchText by remember { androidx.compose.runtime.mutableStateOf("") }
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
             Text("همراه افغان", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            OutlinedTextField(value = searchText, onValueChange = { searchText = it }, modifier = Modifier.fillMaxWidth(), label = { Text("🔎 چی می‌خوای بدونی؟") }, singleLine = true)
+            Spacer(Modifier.height(8.dp))
+            if (searchText.isNotBlank()) homeSearch(searchText).forEach { (title, desc, target) -> Card(Modifier.fillMaxWidth()) { Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(title, fontWeight = FontWeight.Bold); Text(desc, color = MaterialTheme.colorScheme.onSurfaceVariant) }; TextButton(onClick = { go(target) }) { Text("ورود") } } } }
             Text("در کنار شما، در هر قدم از راه",
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -64,6 +73,7 @@ fun Home(go: (String) -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun Section(t: String, s: String, go: (String) -> Unit, target: String) {

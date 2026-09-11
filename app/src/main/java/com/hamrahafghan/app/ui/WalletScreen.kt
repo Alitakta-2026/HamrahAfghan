@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Wallet() {
+    var searchText by remember { mutableStateOf("") }
     var balance by remember { mutableStateOf(500000) }
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
@@ -33,6 +34,9 @@ fun Wallet() {
     ) {
         item {
             Text("💰 کیف پول همراه", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(value = searchText, onValueChange = { searchText = it }, modifier = Modifier.fillMaxWidth(), label = { Text("🔎 جستجوی خدمات کیف پول") }, singleLine = true)
+            Spacer(Modifier.height(8.dp))
         }
         item {
             Card(Modifier.fillMaxWidth()) {
@@ -48,7 +52,8 @@ fun Wallet() {
             }
         }
         item { Text("خدمات پرداخت", fontWeight = FontWeight.Bold) }
-        items(listOf("📱 شارژ و اینترنت", "⚡ برق", "💧 آب", "🔥 گاز", "🚕 خدمات آنلاین")) {
+        val filteredServices = listOf("📱 شارژ و اینترنت", "⚡ برق", "💧 آب", "🔥 گاز", "🚕 خدمات آنلاین").filter { it.contains(searchText, ignoreCase = true) }
+        items(filteredServices) {
             Card(Modifier.fillMaxWidth()) {
                 ListItem(
                     headlineContent = { Text(it) },
