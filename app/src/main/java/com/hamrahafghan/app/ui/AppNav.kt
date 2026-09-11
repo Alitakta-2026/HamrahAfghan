@@ -1,5 +1,6 @@
 package com.hamrahafghan.app.ui
 
+import com.hamrahafghan.app.ui.theme.HamrahTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,7 +24,7 @@ fun App() {
     var page by remember { mutableStateOf("home") }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        MaterialTheme {
+        HamrahTheme {
             Scaffold(
                 bottomBar = {
                     NavigationBar {
@@ -61,6 +62,7 @@ fun App() {
                     "children" -> ChildrenEducationScreen(onAlphabetClick = { page = "alphabet" }, onMathClick = { page = "math" })
                     "alphabet" -> AlphabetScreen()
                         "math" -> MathScreen()
+                        "science" -> ScienceScreen()
                         "migration" -> MigrationScreen()
                         "jobs" -> Jobs()
                         else -> More { page = "migration" }
