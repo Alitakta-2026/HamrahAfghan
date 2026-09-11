@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-fun homeSearch(q: String): List<Triple<String,String,String>> = listOf(Triple("💰 کیف پول همراه","پرداخت شارژ، قبض و خدمات","wallet"), Triple("💼 کاریابی","پیدا کردن کار و ثبت آگهی","jobs"), Triple("🌍 مهاجرت و ویزا","اطلاعات و منابع معتبر","more"), Triple("📚 آموزش کودکان","آموزش و سرگرمی","more"), Triple("🏠 خانه و خدمات","اطلاعات کاربردی","more"), Triple("🆘 کمک فوری","شماره‌ها و مراکز مهم","more")).filter { (a,b,_) -> "$a $b".contains(q, true) }
+fun homeSearch(q: String): List<Triple<String,String,String>> = listOf(Triple("💰 کیف پول همراه","پرداخت شارژ، قبض و خدمات","wallet"), Triple("💼 کاریابی","پیدا کردن کار و ثبت آگهی","jobs"), Triple("🌍 مهاجرت و ویزا","اطلاعات و منابع معتبر","more"), Triple("📚 آموزش کودکان","آموزش و سرگرمی","children"), Triple("🏠 خانه و خدمات","اطلاعات کاربردی","more"), Triple("🆘 کمک فوری","شماره‌ها و مراکز مهم","more")).filter { (a,b,_) -> "$a $b".contains(q, true) }
 
 @Composable
 fun Home(go: (String) -> Unit) {
@@ -58,7 +58,7 @@ fun Home(go: (String) -> Unit) {
         }
         item { Section("💼 کاریابی", "پیدا کردن کار و ثبت آگهی", go, "jobs") }
         item { Section("🌍 مهاجرت و ویزا", "اطلاعات و منابع معتبر", go, "more") }
-        item { Section("📚 آموزش کودکان", "آموزش و سرگرمی", go, "more") }
+        item { Section("📚 آموزش کودکان", "آموزش و سرگرمی", go, "children") }
         item { Section("🏠 خانه و خدمات", "اطلاعات کاربردی", go, "more") }
         item { Section("🆘 کمک فوری", "شماره‌ها و مراکز مهم", go, "more") }
         item {
