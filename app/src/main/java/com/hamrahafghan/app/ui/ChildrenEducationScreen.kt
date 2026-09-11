@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ChildrenEducationScreen() {
+fun ChildrenEducationScreen(onAlphabetClick: () -> Unit = {}) {
     var searchText by remember { mutableStateOf("") }
 
     val lessons = listOf(
@@ -64,7 +64,7 @@ fun ChildrenEducationScreen() {
         }
 
         items(filteredLessons) { lesson ->
-            Card(
+            Card(onClick = { if (lesson.first.startsWith("🔤")) onAlphabetClick() },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ListItem(
