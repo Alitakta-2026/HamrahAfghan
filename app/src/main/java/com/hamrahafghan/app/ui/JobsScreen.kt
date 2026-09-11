@@ -1,10 +1,12 @@
 package com.hamrahafghan.app.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,26 +17,51 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.weight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import java.util.UUID
 
-data class Job(val title: String, val type: String, val city: String, val salary: String, val phone: String, val hours: String, val description: String)
+data class Job(
+    val id: String = "",
+    val title: String = "",
+    val type: String = "",
+    val city: String = "",
+    val salary: String = "",
+    val phone: String = "",
+    val hours: String = "",
+    val description: String = "",
+    val ownerId: String = ""
+)
 
+private const val JOBS_COLLECTION = "jobs"
+
+private fun getDeviceId(context: Context): String {
+    val prefs = context.getSharedPreferences("hamrah_prefs", Context.MODE_PRIVATE)
+    var id = prefs.getString("device_id", null)
+    if (id == null) {
+        id = UUID.randomUUID().toString()
+        prefs.edit().putString("device_id", id).apply()
+    }
+    return id
+}
 
 private fun normalizeText(text: String): String {
     return text
@@ -48,35 +75,51 @@ private fun normalizeText(text: String): String {
 
 @Composable
 fun Jobs() {
+    val context = LocalContext.current
+    val deviceId = remember { getDeviceId(context) }
+    val db = remember { FirebaseFirestore.getInstance() }
+
     var selectedJob by remember { mutableStateOf<Job?>(null) }
     var showAddJob by remember { mutableStateOf(false) }
     var editingJob by remember { mutableStateOf<Job?>(null) }
     var showMyJobs by remember { mutableStateOf(false) }
-    val myJobs = remember { mutableStateListOf<Job>() }
+    var loading by remember { mutableStateOf(true) }
+    var errorMsg by remember { mutableStateOf("") }
     var searchText by remember { mutableStateOf("") }
     var selectedCity by remember { mutableStateOf("همه شهرها") }
     var cityMenuExpanded by remember { mutableStateOf(false) }
 
-    val jobs = remember {
-        mutableStateListOf(
-            Job("کارگر ساده","خدماتی","تهران","توافقی","","۸ تا ۱۷","کار در مجموعه خدماتی"),
-            Job("کمک‌آشپز","آشپزی","مشهد","توافقی","","۹ تا ۱۸","کمک در آشپزخانه"),
-            Job("شاگرد مکانیکی","مکانیکی","کرج","توافقی","","۸ تا ۱۷","کمک به مکانیک و یادگیری کار"),
-            Job("نیروی خدماتی","خدماتی","قم","توافقی","","۷ تا ۱۶","نظافت و خدمات مجموعه")
-        )
+    val jobs = remember { mutableStateListOf<Job>() }
+
+    DisposableEffect(Unit) {
+        val registration: ListenerRegistration = db.collection(JOBS_COLLECTION)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    errorMsg = "خطا در دریافت آگهی‌ها — اتصال اینترنت را بررسی کنید."
+                    loading = false
+                    return@addSnapshotListener
+                }
+                jobs.clear()
+                snapshot?.documents?.forEach { doc ->
+                    val job = doc.toObject(Job::class.java)?.copy(id = doc.id)
+                    if (job != null) jobs.add(job)
+                }
+                loading = false
+            }
+        onDispose { registration.remove() }
     }
+
+    val myJobs = jobs.filter { it.ownerId == deviceId }
     val normalizedSearch = normalizeText(searchText)
     val cityOptions = listOf("همه شهرها", "تهران", "مشهد", "کرج", "قم")
 
     val filteredJobs = jobs.filter {
         val matchesSearch =
             normalizedSearch.isBlank() ||
-                normalizeText(it.title+" "+it.type+" "+it.city+" "+it.description).contains(normalizedSearch, ignoreCase = true)
-
+                normalizeText(it.title + " " + it.type + " " + it.city + " " + it.description).contains(normalizedSearch, ignoreCase = true)
         val matchesCity =
             selectedCity == "همه شهرها" ||
                 normalizeText(it.city).contains(normalizeText(selectedCity), ignoreCase = true)
-
         matchesSearch && matchesCity
     }
 
@@ -121,7 +164,15 @@ fun Jobs() {
                     Text("📋 آگهی‌های من")
                 }
             }
+
             Spacer(Modifier.height(8.dp))
+
+            if (loading) {
+                CircularProgressIndicator()
+            }
+            if (errorMsg.isNotBlank()) {
+                Text(errorMsg)
+            }
         }
 
         items(filteredJobs) { job ->
@@ -136,10 +187,10 @@ fun Jobs() {
             }
         }
 
-        if (filteredJobs.isEmpty()) {
+        if (!loading && filteredJobs.isEmpty()) {
             item {
                 Text(
-                    "آگهی‌ای برای جستجوی شما پیدا نشد.",
+                    "آگهی‌ای پیدا نشد. اولین نفری باش که آگهی ثبت می‌کنه!",
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -160,7 +211,13 @@ fun Jobs() {
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         myJobs.forEach { job ->
-                            Column { Text("${job.title} — ${job.city}") ; Button(onClick = { editingJob = job; showMyJobs = false }) { Text("✏️ ویرایش") }; Button(onClick = { myJobs.remove(job); jobs.remove(job) }) { Text("🗑️ حذف") } }
+                            Column {
+                                Text("${job.title} — ${job.city}")
+                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Button(onClick = { editingJob = job; showMyJobs = false }) { Text("✏️ ویرایش") }
+                                    Button(onClick = { db.collection(JOBS_COLLECTION).document(job.id).delete() }) { Text("🗑️ حذف") }
+                                }
+                            }
                         }
                     }
                 }
@@ -170,13 +227,25 @@ fun Jobs() {
             }
         )
     }
-    if (editingJob != null) { AddJobDialog(existingJob = editingJob, onDismiss = { editingJob = null }, onSubmit = { entry -> val i = myJobs.indexOf(editingJob); if (i >= 0) myJobs[i] = entry; val j = jobs.indexOf(editingJob); if (j >= 0) jobs[j] = entry; editingJob = null }) }
+
+    if (editingJob != null) {
+        AddJobDialog(
+            existingJob = editingJob,
+            onDismiss = { editingJob = null },
+            onSubmit = { entry ->
+                db.collection(JOBS_COLLECTION).document(entry.id)
+                    .set(entry.copy(ownerId = deviceId))
+                editingJob = null
+            }
+        )
+    }
+
     if (showAddJob) {
         AddJobDialog(
             onDismiss = { showAddJob = false },
             onSubmit = { entry ->
-                jobs.add(entry)
-                myJobs.add(entry)
+                db.collection(JOBS_COLLECTION).add(entry.copy(ownerId = deviceId))
+                showAddJob = false
             }
         )
     }
@@ -247,8 +316,10 @@ private fun JobDetailDialog(job: Job, onDismiss: () -> Unit) {
         )
     }
 }
+
 @Composable
-private fun AddJobDialog(existingJob: Job? = null,
+private fun AddJobDialog(
+    existingJob: Job? = null,
     onDismiss: () -> Unit,
     onSubmit: (Job) -> Unit
 ) {
@@ -278,7 +349,18 @@ private fun AddJobDialog(existingJob: Job? = null,
             Button(
                 onClick = {
                     if (title.isNotBlank() && type.isNotBlank() && city.isNotBlank()) {
-                        onSubmit(Job(title, type, city, salary.ifBlank { "توافقی" }, phone, hours, description))
+                        onSubmit(
+                            Job(
+                                id = existingJob?.id ?: "",
+                                title = title,
+                                type = type,
+                                city = city,
+                                salary = salary.ifBlank { "توافقی" },
+                                phone = phone,
+                                hours = hours,
+                                description = description
+                            )
+                        )
                         onDismiss()
                     }
                 }
