@@ -121,6 +121,7 @@ fun Jobs() {
                 }
             }
             Spacer(Modifier.height(8.dp))
+        }
 
         items(filteredJobs) { job ->
             Card(Modifier.fillMaxWidth()) {
