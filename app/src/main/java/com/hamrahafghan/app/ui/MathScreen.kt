@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,19 +22,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ChildrenEducationScreen(onAlphabetClick: () -> Unit = {}, onMathClick: () -> Unit = {}) {
+fun MathScreen() {
     var searchText by remember { mutableStateOf("") }
 
-    val lessons = listOf(
-        "🔤 الفبا و خواندن" to "یادگیری حروف، کلمات و خواندن ساده",
-        "🔢 ریاضی" to "اعداد، جمع، تفریق و تمرین‌های ساده",
-        "🔬 علوم و دانستنی‌ها" to "آشنایی با طبیعت، بدن و دنیای اطراف",
-        "🎮 بازی‌های آموزشی" to "بازی‌های سرگرم‌کننده برای یادگیری بهتر",
-        "📝 تمرین و آزمون" to "تمرین‌های کوتاه و آزمون‌های آموزشی",
-        "⭐ پیشرفت کودک" to "پیگیری درس‌ها و تمرین‌های انجام‌شده"
+    val topics = listOf(
+        "🔢 شمارش ۱ تا ۱۰" to "یادگیری اعداد با مثال‌های ساده",
+        "➕ جمع ساده" to "جمع اعداد کوچک با مثال‌های تصویری",
+        "➖ تفریق ساده" to "یادگیری کم کردن با مثال‌های کودکانه",
+        "🔷 شکل‌ها و رنگ‌ها" to "آشنایی با دایره، مربع، مثلث و رنگ‌ها",
+        "📏 اندازه‌گیری" to "بلند، کوتاه، بزرگ و کوچک",
+        "🧠 تمرین ریاضی" to "تمرین‌های کوتاه برای تقویت مهارت ریاضی"
     )
 
-    val filteredLessons = lessons.filter {
+    val filteredTopics = topics.filter {
         it.first.contains(searchText, ignoreCase = true) ||
         it.second.contains(searchText, ignoreCase = true)
     }
@@ -47,43 +47,44 @@ fun ChildrenEducationScreen(onAlphabetClick: () -> Unit = {}, onMathClick: () ->
     ) {
         item {
             Text(
-                "📚 آموزش کودکان",
+                "🔢 ریاضی",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Text("یادگیری ساده، مفید و سرگرم‌کننده برای کودکان")
+            Text("ریاضی را ساده و سرگرم‌کننده یاد بگیر")
 
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("🔎 جستجو در آموزش") },
+                label = { Text("🔎 جستجو در ریاضی") },
                 singleLine = true
             )
         }
 
-        items(filteredLessons) { lesson ->
-            Card(onClick = { if (lesson.first.startsWith("🔤")) onAlphabetClick() else if (lesson.first.startsWith("🔢")) onMathClick() },
+        items(filteredTopics) { topic ->
+            Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ListItem(
                     headlineContent = {
                         Text(
-                            lesson.first,
-                            fontWeight = FontWeight.Bold
+                            topic.first,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
                         )
                     },
                     supportingContent = {
-                        Text(lesson.second)
+                        Text(topic.second)
                     }
                 )
             }
         }
 
-        if (filteredLessons.isEmpty()) {
+        if (filteredTopics.isEmpty()) {
             item {
-                Text("درسی برای جستجوی شما پیدا نشد.")
+                Text("موضوعی برای جستجوی شما پیدا نشد.")
             }
         }
     }

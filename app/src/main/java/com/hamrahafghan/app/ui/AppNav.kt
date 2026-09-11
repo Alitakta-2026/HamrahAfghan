@@ -58,8 +58,9 @@ fun App() {
                     when (page) {
                         "home" -> Home { page = it }
                         "wallet" -> Wallet()
-                    "children" -> ChildrenEducationScreen(onAlphabetClick = { page = "alphabet" })
+                    "children" -> ChildrenEducationScreen(onAlphabetClick = { page = "alphabet" }, onMathClick = { page = "math" })
                     "alphabet" -> AlphabetScreen()
+                        "math" -> MathScreen()
                         "migration" -> MigrationScreen()
                         "jobs" -> Jobs()
                         else -> More { page = "migration" }
