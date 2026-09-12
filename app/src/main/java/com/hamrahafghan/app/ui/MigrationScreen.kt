@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hamrahafghan.app.network.MigrationApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private data class MigrationLink(val name: String, val url: String)
 private data class MigrationCategory(
@@ -55,7 +57,7 @@ fun MigrationScreen() {
 
     LaunchedEffect(Unit) {
         try {
-            val data = MigrationApi.load()
+            val data = withContext(Dispatchers.IO) { MigrationApi.load() }
             pageTitle = data.optString("title", pageTitle)
             notice = data.optString("notice", "")
             val arr = data.optJSONArray("categories")
