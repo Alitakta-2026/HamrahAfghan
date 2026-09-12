@@ -1,28 +1,52 @@
 package com.hamrahafghan.app.ui
 
+
 import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.fillMaxSize
+
 import androidx.compose.foundation.layout.fillMaxWidth
+
 import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.lazy.LazyColumn
+
 import androidx.compose.foundation.lazy.items
+
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material3.Card
+
 import androidx.compose.material3.CardDefaults
+
 import androidx.compose.material3.ListItem
+
 import androidx.compose.material3.ListItemDefaults
+
 import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.material3.OutlinedTextField
+
 import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.getValue
+
 import androidx.compose.runtime.mutableStateOf
+
 import androidx.compose.runtime.remember
+
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.text.font.FontWeight
+
 import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.sp
 
 private data class LessonItem(
@@ -37,7 +61,9 @@ fun ChildrenEducationScreen(
     onAlphabetClick: () -> Unit = {},
     onMathClick: () -> Unit = {},
     onScienceClick: () -> Unit = {},
-    onGamesClick: () -> Unit = {}
+    onGamesClick: () -> Unit = {},
+    onExerciseClick: () -> Unit = {},
+    onProgressClick: () -> Unit = {}
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -46,8 +72,8 @@ fun ChildrenEducationScreen(
         LessonItem("🔢 ریاضی", "اعداد، جمع، تفریق و تمرین‌های ساده", ready = true, action = onMathClick),
         LessonItem("🔬 علوم و دانستنی‌ها", "آشنایی با طبیعت، بدن و دنیای اطراف", ready = true, action = onScienceClick),
         LessonItem("🎮 بازی‌های آموزشی", "بازی‌های سرگرم‌کننده برای یادگیری بهتر", ready = true, action = onGamesClick),
-        LessonItem("📝 تمرین و آزمون", "تمرین‌های کوتاه و آزمون‌های آموزشی", ready = false),
-        LessonItem("⭐ پیشرفت کودک", "پیگیری درس‌ها و تمرین‌های انجام‌شده", ready = false)
+        LessonItem("📝 تمرین و آزمون", "تمرین‌های کوتاه و آزمون‌های آموزشی", ready = true, action = onExerciseClick),
+        LessonItem("⭐ پیشرفت کودک", "پیگیری درس‌ها و تمرین‌های انجام‌شده", ready = true, action = onProgressClick)
     )
 
     val filteredLessons = lessons.filter {

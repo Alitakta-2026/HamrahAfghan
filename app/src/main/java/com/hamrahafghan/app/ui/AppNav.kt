@@ -59,10 +59,12 @@ fun App() {
                     when (page) {
                         "home" -> Home { page = it }
                         "wallet" -> Wallet()
-                    "children" -> ChildrenEducationScreen(onAlphabetClick = { page = "alphabet" }, onMathClick = { page = "math" }, onScienceClick = { page = "science" }, onGamesClick = { page = "games" })
+                    "children" -> ChildrenEducationScreen(onAlphabetClick = { page = "alphabet" }, onMathClick = { page = "math" }, onScienceClick = { page = "science" }, onGamesClick = { page = "games" }, onExerciseClick = { page = "exercise" }, onProgressClick = { page = "progress" })
                     "alphabet" -> AlphabetScreen()
                         "math" -> MathScreen()
                         "science" -> ScienceScreen()
+                        "exercise" -> ExerciseTestScreen()
+                        "progress" -> ProgressScreen()
                         "games" -> EducationalGamesScreen()
                         "migration" -> MigrationScreen()
                         "jobs" -> Jobs()
