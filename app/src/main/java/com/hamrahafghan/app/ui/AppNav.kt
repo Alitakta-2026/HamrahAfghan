@@ -66,7 +66,7 @@ fun App() {
                         "games" -> EducationalGamesScreen()
                         "migration" -> MigrationScreen()
                         "jobs" -> Jobs()
-                        else -> More { page = "migration" }
+                        else -> More(onMigrationClick = { page = "migration" }, onChildrenClick = { page = "children" })
                     }
                 }
             }
