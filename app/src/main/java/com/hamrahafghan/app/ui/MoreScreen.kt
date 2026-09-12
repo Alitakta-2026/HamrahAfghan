@@ -1,17 +1,22 @@
 package com.hamrahafghan.app.ui
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -22,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,26 +36,41 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private data class MoreItem(
+    val title: String,
+    val ready: Boolean,
+    val action: (() -> Unit)? = null
+)
+
 @Composable
-fun More(onMigrationClick: () -> Unit = {}) {
+fun More(onMigrationClick: () -> Unit = {}, onChildrenClick: () -> Unit = {}) {
     var searchText by remember { mutableStateOf("") }
     var testResult by remember { mutableStateOf<String?>(null) }
     var testing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val moreItems = listOf(
-        "🌍 مهاجرت و ویزا",
-        "📱 سیم‌کارت",
-        "💳 خدمات بانکی",
-        "📄 مدارک و اقامت",
-        "🏠 خانه و اجاره",
-        "⚖️ حقوق و قوانین",
-        "🏥 درمان",
-        "📍 مراکز مهم",
-        "🆘 کمک فوری",
-        "💬 پرسش و پاسخ",
-        "🔐 حریم خصوصی"
-    ).filter { it.contains(searchText, ignoreCase = true) }
+        MoreItem("🌍 مهاجرت و ویزا", ready = true, action = onMigrationClick),
+        MoreItem("📚 آموزش کودکان", ready = true, action = onChildrenClick),
+        MoreItem("📱 سیم‌کارت", ready = false),
+        MoreItem("💳 خدمات بانکی", ready = false),
+        MoreItem("📄 مدارک و اقامت", ready = false),
+        MoreItem("🏠 خانه و اجاره", ready = false),
+        MoreItem("⚖️ حقوق و قوانین", ready = false),
+        MoreItem("🏥 درمان", ready = false),
+        MoreItem("📍 مراکز مهم", ready = false),
+        MoreItem("🆘 کمک فوری", ready = false),
+        MoreItem("💬 پرسش و پاسخ", ready = false),
+        MoreItem("🔐 حریم خصوصی", ready = true, action = {
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://alitakta-2026.github.io/HamrahAfghan/privacy.html")
+                )
+            )
+        })
+    ).filter { it.title.contains(searchText, ignoreCase = true) }
 
     LazyColumn(
         Modifier.fillMaxSize().padding(18.dp),
@@ -67,16 +88,45 @@ fun More(onMigrationClick: () -> Unit = {}) {
             )
         }
 
-        items(moreItems) {
+        items(moreItems) { moreItem ->
             Card(
-                onClick = {
-                    if (it == "🌍 مهاجرت و ویزا") onMigrationClick()
-                },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { moreItem.action?.invoke() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = if (moreItem.ready) {
+                    CardDefaults.cardColors()
+                } else {
+                    CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                }
             ) {
                 ListItem(
-                    headlineContent = { Text(it) },
-                    trailingContent = { Text("›") }
+                    headlineContent = {
+                        Text(
+                            moreItem.title,
+                            color = if (moreItem.ready) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    },
+                    trailingContent = {
+                        if (moreItem.ready) {
+                            Text("›")
+                        } else {
+                            Text(
+                                "به‌زودی",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.secondaryContainer,
+                                        RoundedCornerShape(50)
+                                    )
+                                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                            )
+                        }
+                    },
+                    colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
                 )
             }
         }
