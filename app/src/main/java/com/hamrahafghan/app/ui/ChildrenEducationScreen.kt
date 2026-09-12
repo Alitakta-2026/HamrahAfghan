@@ -64,7 +64,7 @@ fun ChildrenEducationScreen(onAlphabetClick: () -> Unit = {}, onMathClick: () ->
         }
 
         items(filteredLessons) { lesson ->
-            Card(onClick = { if (lesson.first.startsWith("🔤")) onAlphabetClick() else if (lesson.first.startsWith("🔢")) onMathClick() else if (lesson.first.startsWith("🔬")) onScienceClick() else if (lesson.first.startsWith("🎮")) onGamesClick() },
+            Card(onClick = { if (lesson.first.startsWith("🔤")) onAlphabetClick() else if (lesson.first.startsWith("🔢")) onMathClick() else if (lesson.first.startsWith("🔬")) onScienceClick() },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ListItem(
